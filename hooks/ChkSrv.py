@@ -1,23 +1,23 @@
 # pylint: disable=invalid-name,fixme
 """
-# susChkSrv.py
+# ChkSrv.py
 # Author:       Fabian Herschel, June 2022
 # License:      GNU General Public License (GPL)
 # Copyright:    (c) 2022-2026 SUSE LLC
 
-susChkSrv needs SAP HANA 2.0 SPS4 (2.00.040.00) as minimum version
+ChkSrv needs SAP HANA 2.0 SPS4 (2.00.040.00) as minimum version
 
 To use this HA/DR hook provide please add the following lines (or similar) to your global.ini:
-    [ha_dr_provider_suschksrv]
-    provider = susChkSrv
-    path = /usr/share/SAPHanaSR-angi
+    [ha_dr_provider_chksrv]
+    provider = ChkSrv
+    path = /usr/share/sap-hana-ha
     execution_order = 3
     action_on_lost = kill | stop | ignore | fence (attr is currently not implemented)
     stop_timeout = 20
     # timeout = timeout-in-seconds (currently not implemented)
 
     [trace]
-    ha_dr_suschksrv = info
+    ha_dr_chksrv = info
 
 TODO: Do we also want this hook to jump-in, if a secondary indexserver is crashing? Maybe to be
       selected by a parameter.
@@ -47,7 +47,7 @@ except ImportError as e:
     print(f"Module HADRBase not found - running outside of SAP HANA? - {e}")
 
 # hook section
-SRHookName = "susChkSrv"
+SRHookName = "ChkSrv"
 SRHookVersion = "1.001.1"
 # parameter section
 TIME_OUT_DFLT = 20
@@ -62,13 +62,13 @@ def getEpisode():
 
 
 try:
-    class susChkSrv(HADRBase):
+    class ChkSrv(HADRBase):
         """ class for HADR hook script to handle service changed status events """
 
         def logTimestamp(self, method, episode, outputMessage):
             """ write message to log file with timestamp """
             traceFilepath = os.path.join(os.environ['SAP_RETRIEVAL_PATH'], 'trace',
-                                         'nameserver_suschksrv.trc')
+                                         'nameserver_chksrv.trc')
             try:
                 with open(traceFilepath, "a", encoding="UTF-8") as saphanasr_multitarget_file:
                     currentTimeStr = datetime.now().strftime('%Y-%m-%d %H:%M:%S.%f ')
@@ -124,8 +124,8 @@ try:
             """ tell something about the HADR hook script """
             method = "about"
             self.tracer.info(f"{self.__class__.__name__}.{method}() version {SRHookVersion}")
-            return {"provider_company": "SUSE",
-                    "provider_name": "susChkSrv",  # class name
+            return {"provider_company": "Red Hat",
+                    "provider_name": "ChkSrv",  # class name
                     "provider_description": "Process service status changed events",
                     "provider_version": "1.0"}
 

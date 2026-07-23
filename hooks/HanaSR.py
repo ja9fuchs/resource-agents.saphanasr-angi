@@ -17,13 +17,13 @@ import os
 
 
 # To use this HA/DR hook provide please add the following lines to your global.ini:
-#    [ha_dr_provider_susHanaSR]
-#    provider = susHanaSR
-#    path = /usr/share/SAPHanaSR-angi
+#    [ha_dr_provider_HanaSR]
+#    provider = HanaSR
+#    path = /usr/share/sap-hana-ha
 #    execution_order = 1
 #
 #    [trace]
-#    ha_dr_sushanasr = info
+#    ha_dr_hanasr = info
 #
 FH_SR_HOOK_VERSION = "1.001.1"
 
@@ -31,8 +31,8 @@ FH_SR_HOOK_VERSION = "1.001.1"
 try:
     # remark: case style is given by external configuration
     # pylint: disable-next=C0103
-    class susHanaSR(HADRBase):
-        """ class susHanaSR to handle HADR events for srConnectionChanged """
+    class HanaSR(HADRBase):
+        """ class HanaSR to handle HADR events for srConnectionChanged """
 
         def __init__(self, *args, **kwargs):
             """ constructor - delegate construction to base class """
@@ -44,8 +44,8 @@ try:
 
         def about(self):
             """ tell about the HADR hook """
-            return {"provider_company": "SUSE",
-                    "provider_name": "susHanaSR",  # class name
+            return {"provider_company": "Red Hat",
+                    "provider_name": "HanaSR",  # class name
                     "provider_description": "Inform Cluster about SR state",
                     "provider_version": "1.0"}
 
@@ -53,7 +53,7 @@ try:
         def srConnectionChanged(self, ParamDict, **kwargs):
             """ process srConnectionChanged event """
             method = "srConnectionChanged"
-            self.tracer.info(f"susHanaSR {FH_SR_HOOK_VERSION}"
+            self.tracer.info(f"HanaSR {FH_SR_HOOK_VERSION}"
                              f" {self.__class__.__name__}.srConnectionChanged"
                              f" method called with Dict={ParamDict}")
             my_system_status = ParamDict["system_status"]
@@ -62,7 +62,7 @@ try:
             my_in_sync = ParamDict["is_in_sync"]
             my_reason = ParamDict["reason"]
             my_site = ParamDict["siteName"]
-            self.tracer.info(f"susHanaSR {self.__class__.__name__}.srConnectionChanged"
+            self.tracer.info(f"HanaSR {self.__class__.__name__}.srConnectionChanged"
                              f" system_status={my_system_status} SID={self.my_sid}"
                              f" in_sync={my_in_sync} reason={my_reason}")
             if my_system_status == 15:
@@ -70,7 +70,7 @@ try:
             else:
                 if my_in_sync:
                     # ignoring the SFAIL, because we are still in sync
-                    self.tracer.info(f"susHanaSR {FH_SR_HOOK_VERSION}"
+                    self.tracer.info(f"HanaSR {FH_SR_HOOK_VERSION}"
                                      f" {self.__class__.__name__}.srConnectionChanged ignoring bad"
                                      f" SR status because of is_in_sync=True (reason={my_reason})")
                     my_srs = ""

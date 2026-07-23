@@ -5,17 +5,17 @@
 # License:      GNU General Public License (GPL)
 # Copyright:    (c) 2022-2026 SUSE LLC
 
-susTkOver needs SAP HANA 2.0 SPS4 (2.00.040.00) as minimum version
+TkOver needs SAP HANA 2.0 SPS4 (2.00.040.00) as minimum version
 
 To use this HA/DR hook provide please add the following lines (or similar) to your global.ini:
-    [ha_dr_provider_susTkOver]
-    provider = susTkOver
-    path = /usr/share/SAPHanaSR-angi
+    [ha_dr_provider_TkOver]
+    provider = TkOver
+    path = /usr/share/sap-hana-ha
     sustkover_timeout = 30
     execution_order = 2
 
     [trace]
-    ha_dr_sustkover = info
+    ha_dr_tkover = info
 
 Please make sure to use our supported maintenance procedure together with this HA/DR hook as
 described in the man page SAPHanaSR_maitenance_examples(7) -
@@ -41,7 +41,7 @@ RC_TOB = 50277
 
 try:
     # pylint: disable-next=invalid-name
-    class susTkOver(HADRBase):
+    class TkOver(HADRBase):
         """ class for HADR hook to handle preTakeover events """
 
         def __init__(self, *args, **kwargs):
@@ -62,8 +62,8 @@ try:
             """ tell something about the HADR hook script """
             method = "about"
             self.tracer.info(f"{self.__class__.__name__}.{method}() version {FHSRHOOKVERSION}")
-            return {"provider_company": "SUSE",
-                    "provider_name": "susTkOver",  # class name
+            return {"provider_company": "Red Hat",
+                    "provider_name": "TkOver",  # class name
                     "provider_description": "Block manual takeover, if cluster is active",
                     "provider_version": "1.0"}
 
