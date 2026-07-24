@@ -11,7 +11,7 @@ To use this HA/DR hook provide please add the following lines (or similar) to yo
     [ha_dr_provider_TkOver]
     provider = TkOver
     path = /usr/share/sap-hana-ha
-    sustkover_timeout = 30
+    tkover_timeout = 30
     execution_order = 2
 
     [trace]
@@ -50,9 +50,9 @@ try:
             method = "init"
 
             # read settings from global.ini
-            # read sustkover_timeout
-            if self.config.hasKey("sustkover_timeout"):
-                self.time_out = self.config.get("sustkover_timeout")
+            # read tkover_timeout
+            if self.config.hasKey("tkover_timeout"):
+                self.time_out = self.config.get("tkover_timeout")
             else:
                 self.time_out = TIME_OUT_DFLT
             self.tracer.info(f"{self.__class__.__name__}.{method}()"
